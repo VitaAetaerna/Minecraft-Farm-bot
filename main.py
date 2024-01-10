@@ -1,7 +1,6 @@
 import time
 import os
 import datetime
-running = False
 
 
 try:
@@ -13,44 +12,48 @@ except ImportError:
     os.system('cmd /k pip install keyboard')
     os.system('cmd /k pip install pywin32')
 
-def GetNewTime():
-    endTime = datetime.datetime.now() + datetime.timedelta(minutes=1.42)
-    return endTime
 
 def Bot():
-    running = False
+    State = 0  #0 left 1 right
     mouse = MouseController()
+    print("This bot requires Minecraft 1.8")
+    print("Press  ,  to start the bot")
     keyboard.wait(',')
-    print('Starting in 5 seconds...')
-    running = True
-    time.sleep(5)
-    
-
-    while running:
-        while datetime.datetime.now() < GetNewTime() and GetWindowText(GetForegroundWindow()) == "Minecraft* 1.20 - Multiplayer (3rd-party Server)":
-            time.sleep(0.1)
+    print("Starting in 5 seconds, please tab into your MC...")
+    time.sleep(5.5)
+    #Run left
+    if State == 0:
+        endTime = datetime.datetime.now() + datetime.timedelta(minutes=1)
+        print(endTime)
+        while datetime.datetime.now() < endTime and GetWindowText(GetForegroundWindow()) == "Minecraft* 1.20 - Multiplayer (3rd-party Server)":
+            print(endTime - datetime.datetime.now())
+            time.sleep(0.05)
             keyboard.press('w')
-            time.sleep(0.1)
             keyboard.press('a')
-            mouse.click(Button.left, 1)
-            if datetime.datetime.now() >= GetNewTime():
-                break
-
-
-        while datetime.datetime.now() < GetNewTime() and GetWindowText(GetForegroundWindow()) == "Minecraft* 1.20 - Multiplayer (3rd-party Server)":
-            time.sleep(0.1)
-            keyboard.press('w')
-            time.sleep(0.1)
-            keyboard.press('d')
-            mouse.click(Button.left, 1)
-            if datetime.datetime.now() >= GetNewTime():
-                break
-
-        event = keyboard.read_event()
-        if event.event_type == keyboard.KEY_DOWN and event.name == 'l':
-            keyboard.wait(',')
-            Bot()
+            mouse.click(Button.left, 1) 
             
+            if  GetWindowText(GetForegroundWindow()) != "Minecraft* 1.20 - Multiplayer (3rd-party Server)":
+                time.sleep(30)
+                if  GetWindowText(GetForegroundWindow()) == "Minecraft* 1.20 - Multiplayer (3rd-party Server)":
+                    continue
+            if datetime.datetime.now() >= endTime:
+                State = 1
+    #Run right
+    if State == 1:
+        endTime = datetime.datetime.now() + datetime.timedelta(minutes=1)
+        print(endTime)
+        while datetime.datetime.now() < endTime and GetWindowText(GetForegroundWindow()) == "Minecraft* 1.20 - Multiplayer (3rd-party Server)":
+            print(endTime - datetime.datetime.now())
+            time.sleep(0.05)
+            keyboard.press('w')
+            keyboard.press('d')
+            mouse.click(Button.left, 1) 
+            
+            if  GetWindowText(GetForegroundWindow()) != "Minecraft* 1.20 - Multiplayer (3rd-party Server)":
+                time.sleep(30)
+                if  GetWindowText(GetForegroundWindow()) == "Minecraft* 1.20 - Multiplayer (3rd-party Server)":
+                    continue
+            if datetime.datetime.now() >= endTime:
+                State = 0
 
-if __name__ == "__main__":
-    Bot()
+Bot()
