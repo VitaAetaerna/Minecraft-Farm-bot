@@ -1,5 +1,7 @@
 import time
 import os
+import datetime
+running = False
 
 
 try:
@@ -14,24 +16,36 @@ except ImportError:
 def Bot():
     mouse = MouseController()
     keyboard.wait(',')
+    print('Starting...')
+    running = True
     time.sleep(5)
 
-    while True:
-        tl_end = time.time() + 60 * 2
-        while time.time() < tl_end:
+    while running:
+        endTime = datetime.datetime.now() + datetime.timedelta(minutes=1.42)
+        while True:
+            time.sleep(0.2)
+            keyboard.press('w')
             time.sleep(0.2)
             keyboard.press('a')
             mouse.click(Button.left, 1)
+            if datetime.datetime.now() >= endTime:
+                break
 
-        tr_end = time.time() + 60 * 2
-        while time.time() < tr_end:
+
+        endTime = datetime.datetime.now() + datetime.timedelta(minutes=1.42)
+        while True:
+            time.sleep(0.2)
+            keyboard.press('w')
             time.sleep(0.2)
             keyboard.press('d')
             mouse.click(Button.left, 1)
+            if datetime.datetime.now() >= endTime:
+                break
 
         event = keyboard.read_event()
         if event.event_type == keyboard.KEY_DOWN and event.name == 'l':
             keyboard.wait(',')
+            running = False
             Bot()
 
 if __name__ == "__main__":
