@@ -3,16 +3,6 @@ import os
 import datetime
 import threading
 
-print('                      /^--^\     /^--^\     /^--^\ ')
-print('                      \____/     \____/     \____/')
-print('                     /      \   /      \   /      \ ')
-print('                    |        | |        | |        |   Made by VitaAeterna              ')
-print('                     \__  __/   \__  __/   \__  __/')
-print('|^|^|^|^|^|^|^|^|^|^|^|^\ \^|^|^|^/ /^|^|^|^|^\ \^|^|^|^|^|^|^|^|^|^|^|^|')
-print('| | | | | | | | | | | | |\ \| | |/ /| | | | | | \ \ | | | | | | | | | | |')
-print('########################/ /######\ \###########/ /#######################')
-print('| | | | | | | | | | | | \/| | | | \/| | | | | |\/ | | | | | | | | | | | |')
-print('|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|')
 
 try:
     from win32gui import GetWindowText, GetForegroundWindow
@@ -29,11 +19,12 @@ def MouseThread():
             pyautogui.mouseDown()
         else:
             pyautogui.mouseUp()
+            time.sleep(25)
     
 
 def Bot():
     State = 0  #0 left 1 right
-    time_for_lane = input("Enter the time you need from 1 Lane End to the End (as a floating point number (1.50 = 1 min 30), (1.33 = 1 min 20)) \n")
+    time_for_lane = input("Enter the time you need from 1 Lane End to the End (as a floating point number (1.50 = 1 min 30), (1.33 = 1 min 20)) \n ")
     time_for_lane = float(time_for_lane)
     print("Press Space to start the bot")
     keyboard.wait('space')
@@ -74,16 +65,15 @@ def Bot():
                 pyautogui.keyDown('w')
                 pyautogui.keyDown('d')
                 
-                if "Minecraft" in GetWindowText(GetForegroundWindow()):
+                if not "Minecraft" in GetWindowText(GetForegroundWindow()):
                     print("Waiting 30 secs")
                     endTime +=  datetime.timedelta(minutes=0.50)
                     time.sleep(30)
-
+ 
                 if datetime.datetime.now() >= endTime:
                     pyautogui.keyUp('w')
                     pyautogui.keyUp('d')
                     State = 0
 
-threadingBot = threading.Thread(target=Bot)
 threadingMouse = threading.Thread(target=MouseThread)
-threadingBot.start()
+Bot()
