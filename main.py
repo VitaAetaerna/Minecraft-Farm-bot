@@ -26,6 +26,7 @@ def Bot():
                 
                 if  GetWindowText(GetForegroundWindow()) != "Badlion Minecraft Client v4.0.0-a84656f-PRODUCTION4 (1.8.9)":
                     print("Waiting 30 secs")
+                    endTime +=  datetime.timedelta(minutes=0.50)
                     time.sleep(30)
                     if  GetWindowText(GetForegroundWindow()) == "Badlion Minecraft Client v4.0.0-a84656f-PRODUCTION4 (1.8.9)":
                         continue
@@ -44,6 +45,7 @@ def Bot():
                 
                 if  GetWindowText(GetForegroundWindow()) != "Badlion Minecraft Client v4.0.0-a84656f-PRODUCTION4 (1.8.9)":
                     print("Waiting 30 secs")
+                    endTime +=  datetime.timedelta(minutes=0.50)
                     time.sleep(30)
                     if  GetWindowText(GetForegroundWindow()) == "Badlion Minecraft Client v4.0.0-a84656f-PRODUCTION4 (1.8.9)":
                         continue
