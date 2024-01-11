@@ -1,57 +1,85 @@
 import time
 import os
 import datetime
+import threading
 
-from win32gui import GetWindowText, GetForegroundWindow
-import keyboard
-import pyautogui
+print('                      /^--^\     /^--^\     /^--^\ ')
+print('                      \____/     \____/     \____/')
+print('                     /      \   /      \   /      \ ')
+print('                    |        | |        | |        |   Made by VitaAeterna              ')
+print('                     \__  __/   \__  __/   \__  __/')
+print('|^|^|^|^|^|^|^|^|^|^|^|^\ \^|^|^|^/ /^|^|^|^|^\ \^|^|^|^|^|^|^|^|^|^|^|^|')
+print('| | | | | | | | | | | | |\ \| | |/ /| | | | | | \ \ | | | | | | | | | | |')
+print('########################/ /######\ \###########/ /#######################')
+print('| | | | | | | | | | | | \/| | | | \/| | | | | |\/ | | | | | | | | | | | |')
+print('|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|')
+
+try:
+    from win32gui import GetWindowText, GetForegroundWindow
+    import keyboard
+    import pyautogui
+except ImportError as IE:
+    os.system('cmd /k pip install keyboard')
+    os.system('cmd /k pip install pyautogui')
+    os.system('cmd /k pip install pywin32')
+
+def MouseThread():
+    pyautogui.mouseDown()
+    
+
 def Bot():
     State = 0  #0 left 1 right
-    print("This bot requires Minecraft 1.8")
-    print("Press  ,  to start the bot")
-    keyboard.wait(',')
+    time_for_lane = input("Enter the time you need from 1 Lane End to the End (as a floating point number (1.50 = 1 min 30), (1.33 = 1 min 20)) \n")
+    print("Press Space to start the bot")
+    keyboard.wait('space')
     print("Starting in 5 seconds, please tab into your MC...")
-    time.sleep(5.5)
-    #Run left
+    for i in range(5):
+        print(i)
+        time.sleep(1)
+    
 
+
+    #Run Left
     while True:
-        pyautogui.mouseDown()
+        threadingMouse.start()
         if State == 0:
-            endTime = datetime.datetime.now() + datetime.timedelta(minutes=1.26)
+            endTime = datetime.datetime.now() + datetime.timedelta(minutes=time_for_lane)
             print(endTime)
-            while datetime.datetime.now() < endTime and GetWindowText(GetForegroundWindow()) == "Badlion Minecraft Client v4.0.0-a84656f-PRODUCTION4 (1.8.9)":
+            while datetime.datetime.now() < endTime and  "Minecraft" in GetWindowText(GetForegroundWindow()):
                 print(endTime - datetime.datetime.now())
                 pyautogui.keyDown('w')
                 pyautogui.keyDown('a')
                 
-                if  GetWindowText(GetForegroundWindow()) != "Badlion Minecraft Client v4.0.0-a84656f-PRODUCTION4 (1.8.9)":
+                if not "Minecraft" in GetWindowText(GetForegroundWindow()):
                     print("Waiting 30 secs")
                     endTime +=  datetime.timedelta(minutes=0.50)
                     time.sleep(30)
-                    if  GetWindowText(GetForegroundWindow()) == "Badlion Minecraft Client v4.0.0-a84656f-PRODUCTION4 (1.8.9)":
+                    if "Minecraft" in GetWindowText(GetForegroundWindow()):
                         continue
                 if datetime.datetime.now() >= endTime:
                     pyautogui.keyUp('w')
                     pyautogui.keyUp('a')
                     State = 1
+
         #Run right
         if State == 1:
-            endTime = datetime.datetime.now() + datetime.timedelta(minutes=1.26)
+            endTime = datetime.datetime.now() + datetime.timedelta(minutes=time_for_lane)
             print(endTime)
-            while datetime.datetime.now() < endTime and GetWindowText(GetForegroundWindow()) == "Badlion Minecraft Client v4.0.0-a84656f-PRODUCTION4 (1.8.9)":
+            while datetime.datetime.now() < endTime and  "Minecraft" in GetWindowText(GetForegroundWindow()):
                 print(endTime - datetime.datetime.now())
                 pyautogui.keyDown('w')
                 pyautogui.keyDown('d')
                 
-                if  GetWindowText(GetForegroundWindow()) != "Badlion Minecraft Client v4.0.0-a84656f-PRODUCTION4 (1.8.9)":
+                if "Minecraft" in GetWindowText(GetForegroundWindow()):
                     print("Waiting 30 secs")
                     endTime +=  datetime.timedelta(minutes=0.50)
-                    time.sleep(30)
-                    if  GetWindowText(GetForegroundWindow()) == "Badlion Minecraft Client v4.0.0-a84656f-PRODUCTION4 (1.8.9)":
+                    time.(30)
+                    if "Minecraft" in GetWindowText(GetForegroundWindow()):
                         continue
                 if datetime.datetime.now() >= endTime:
                     pyautogui.keyUp('w')
                     pyautogui.keyUp('d')
                     State = 0
-
-Bot()
+threadingBot = threading.Thread(target=Bot)
+threadingMouse = threading.Thread(target=MouseThread)
+threadingBot.start()
