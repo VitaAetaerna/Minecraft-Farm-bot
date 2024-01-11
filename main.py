@@ -24,12 +24,14 @@ except ImportError as IE:
     os.system('cmd /k pip install pywin32')
 
 def MouseThread():
-    pyautogui.mouseDown()
+    while "Minecraft" in GetWindowText(GetForegroundWindow()):
+        pyautogui.mouseDown()
     
 
 def Bot():
     State = 0  #0 left 1 right
     time_for_lane = input("Enter the time you need from 1 Lane End to the End (as a floating point number (1.50 = 1 min 30), (1.33 = 1 min 20)) \n")
+    time_for_lane = float(time_for_lane)
     print("Press Space to start the bot")
     keyboard.wait('space')
     print("Starting in 5 seconds, please tab into your MC...")
@@ -38,10 +40,10 @@ def Bot():
         time.sleep(1)
     
 
+    threadingMouse.start()
 
     #Run Left
     while True:
-        threadingMouse.start()
         if State == 0:
             endTime = datetime.datetime.now() + datetime.timedelta(minutes=time_for_lane)
             print(endTime)
@@ -73,7 +75,7 @@ def Bot():
                 if "Minecraft" in GetWindowText(GetForegroundWindow()):
                     print("Waiting 30 secs")
                     endTime +=  datetime.timedelta(minutes=0.50)
-                    time.(30)
+                    time.sleep(30)
                     if "Minecraft" in GetWindowText(GetForegroundWindow()):
                         continue
                 if datetime.datetime.now() >= endTime:
