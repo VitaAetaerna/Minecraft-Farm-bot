@@ -100,23 +100,15 @@ def Start(sender, app_data):
 
 
 
-#Stop Bot and let it wait 
-def Stop():
-    os.kill(os.getpid(), signal.SIGTERM)
-
-
-
 
 # Build GUI
 def Gui():
     dpg.create_context()
-    dpg.create_viewport(decorated=False, width=275, height=250, x_pos=10, y_pos=0)
+    dpg.create_viewport(decorated=True, width=275, height=250, x_pos=10, y_pos=0)
     dpg.setup_dearpygui()
 
     with dpg.window(label="Pumpkin farmbot", width=275, height=250, no_resize=True, no_move=True, no_collapse=True, no_close=True):
         dpg.add_text("Use at your own Risk \nI take no liabillity", pos=[65, 30], color=[255,0,0])
-
-        dpg.add_button(label="Stop", callback=StopThread.start , width=100, height=25, pos=[65, 160])
 
         dpg.add_input_int(label="Time per lane ", min_value=10, width=75, pos=[65, 65], callback=getSliderLength)
 
@@ -128,13 +120,15 @@ def Gui():
     dpg.show_viewport()
     dpg.start_dearpygui()
     dpg.destroy_context()
+    if dpg.destroy_context:
+        sys.exit()
 
 if __name__ == "__main__":
+    os.system('mode con: cols=15 lines=15')
     global pill2Kill
     pill2Kill = threading.Event()
 
     # Create Thread
-    StopThread = threading.Thread(target=Stop)
     threadingGUI = threading.Thread(target=Gui())
     threadingGUI.start()
 
