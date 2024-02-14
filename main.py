@@ -2,14 +2,12 @@ import time
 import os
 import datetime
 import threading
-
 # importing stuff (when not found install it)
 try:
     from win32gui import GetWindowText, GetForegroundWindow
     import keyboard
     import pyautogui
     import dearpygui.dearpygui as dpg
-
 except ImportError as IE:
     os.system('cmd /k pip install keyboard')
     os.system('cmd /k pip install pyautogui')
@@ -29,6 +27,9 @@ def getSliderVal(sender, app_data):
 
 
 
+
+
+# Mouse Movement and Bot Movement
 def Mouse(event_stopper):
     while not event_stopper.wait(1):    
         while True:
@@ -38,7 +39,7 @@ def Mouse(event_stopper):
                 pyautogui.mouseUp()
                 time.sleep(25)
 
-def Bot(event_stopper):
+def Bot(event_stopper, delay):
     while not event_stopper.wait(1):
         State = 0
         while True:
@@ -80,14 +81,15 @@ def Bot(event_stopper):
                         State = 0
 
 
-
-
-#lane length
-
 #Start bot
 def Start(sender, app_data):
     print("Delay: ", delay)
     print("Length of Lane: ", lengthofline)
+    global threadingBot
+    threadingBot = threading.Thread(target=Bot(pill2Kill, delay=delay))
+
+    global threadingMouse
+    threadingMouse = threading.Thread(target=Mouse(pill2Kill))
     threadingBot.start()
     threadingMouse.start()
 
@@ -113,33 +115,20 @@ def Gui():
 
         dpg.add_input_int(label="Time per lane ", width=75, pos=[65, 65], callback=getSliderLength)
 
-        StartDelay = dpg.add_slider_int(label="Start Delay", width=75, pos=[65, 100], min_value=0, max_value=60, default_value=0, callback=getSliderVal)
+        dpg.add_slider_int(label="Start Delay", width=75, pos=[65, 100], min_value=0, max_value=60, default_value=0, callback=getSliderVal)
         
-        StartButton = dpg.add_button(label="Start bot", callback=Start, width=100, height=25, pos=[65, 130])
+        dpg.add_button(label="Start bot", callback=Start, width=100, height=25, pos=[65, 130])
 
 
     dpg.show_viewport()
     dpg.start_dearpygui()
     dpg.destroy_context()
 
-
-
-
-
-
 if __name__ == "__main__":
     global pill2Kill
     pill2Kill = threading.Event()
 
-    # Create Threads
-
-    global threadingBot
-    threadingBot = threading.Thread(target=Bot(pill2Kill))
-
-    global threadingMouse
-    threadingMouse = threading.Thread(target=Mouse(pill2Kill))
-
-
+    # Create Thread
     threadingGUI = threading.Thread(target=Gui())
     threadingGUI.start()
 
