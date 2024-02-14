@@ -1,4 +1,6 @@
 import time
+import signal
+import sys
 import os
 import datetime
 import threading
@@ -38,23 +40,23 @@ def Mouse(event_stopper):
             else:
                 pyautogui.mouseUp()
                 time.sleep(25)
-
-def Bot(event_stopper, delay):
+def Bot(event_stopper):
     while not event_stopper.wait(1):
         State = 0
         while True:
             if State == 0:
-                endTime = datetime.datetime.now() + datetime.timedelta(seconds=delay)
+                endTime = datetime.datetime.now() + datetime.timedelta(seconds=lengthofline)
                 print(endTime)
                 while datetime.datetime.now() < endTime and  "Minecraft" in GetWindowText(GetForegroundWindow()):
                     print(endTime - datetime.datetime.now())
+                    print("W + A")
                     pyautogui.keyDown('w')
                     pyautogui.keyDown('a')
                     
                     if not "Minecraft" in GetWindowText(GetForegroundWindow()):
                         print("Waiting 30 secs")
-                        endTime +=  datetime.timedelta(minutes=0.50)
-                        time.sleep(30)
+                        endTime +=  datetime.timedelta(seconds=30)
+                        threadingBot.sleep(30)
     
                     if datetime.datetime.now() >= endTime:
                         pyautogui.keyUp('w')
@@ -63,17 +65,18 @@ def Bot(event_stopper, delay):
 
             #Run right
             if State == 1:
-                endTime = datetime.datetime.now() + datetime.timedelta(seconds=delay)
+                endTime = datetime.datetime.now() + datetime.timedelta(seconds=lengthofline)
                 print(endTime)
                 while datetime.datetime.now() < endTime and  "Minecraft" in GetWindowText(GetForegroundWindow()):
                     print(endTime - datetime.datetime.now())
+                    print("W + D")
                     pyautogui.keyDown('w')
                     pyautogui.keyDown('d')
                     
                     if not "Minecraft" in GetWindowText(GetForegroundWindow()):
                         print("Waiting 30 secs")
-                        endTime +=  datetime.timedelta(minutes=0.50)
-                        time.sleep(30)
+                        endTime +=  datetime.timedelta(seconds=30)
+                        threadingBot.sleep(30)
     
                     if datetime.datetime.now() >= endTime:
                         pyautogui.keyUp('w')
@@ -85,8 +88,9 @@ def Bot(event_stopper, delay):
 def Start(sender, app_data):
     print("Delay: ", delay)
     print("Length of Lane: ", lengthofline)
+    time.sleep(delay)
     global threadingBot
-    threadingBot = threading.Thread(target=Bot(pill2Kill, delay=delay))
+    threadingBot = threading.Thread(target=Bot(pill2Kill))
 
     global threadingMouse
     threadingMouse = threading.Thread(target=Mouse(pill2Kill))
@@ -94,12 +98,13 @@ def Start(sender, app_data):
     threadingMouse.start()
 
 
+
+
 #Stop Bot and let it wait 
 def Stop():
-    print("Stop")
-    pill2Kill.set()
-    threadingBot.join()
-    threadingMouse.join()
+    os.kill(os.getpid(), signal.SIGTERM)
+
+
 
 
 # Build GUI
@@ -111,9 +116,9 @@ def Gui():
     with dpg.window(label="Pumpkin farmbot", width=275, height=250, no_resize=True, no_move=True, no_collapse=True, no_close=True):
         dpg.add_text("Use at your own Risk \nI take no liabillity", pos=[65, 30], color=[255,0,0])
 
-        dpg.add_button(label="Stop", callback=Stop, width=100, height=25, pos=[65, 160])
+        dpg.add_button(label="Stop", callback=StopThread.start , width=100, height=25, pos=[65, 160])
 
-        dpg.add_input_int(label="Time per lane ", width=75, pos=[65, 65], callback=getSliderLength)
+        dpg.add_input_int(label="Time per lane ", min_value=10, width=75, pos=[65, 65], callback=getSliderLength)
 
         dpg.add_slider_int(label="Start Delay", width=75, pos=[65, 100], min_value=0, max_value=60, default_value=0, callback=getSliderVal)
         
@@ -129,6 +134,7 @@ if __name__ == "__main__":
     pill2Kill = threading.Event()
 
     # Create Thread
+    StopThread = threading.Thread(target=Stop)
     threadingGUI = threading.Thread(target=Gui())
     threadingGUI.start()
 
